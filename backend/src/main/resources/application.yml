@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pdk-backend
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pdk_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 123456
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 1
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  # 定时任务
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.pdk.module.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+sa-token:
+  token-name: Authorization
+  timeout: 604800
+  active-timeout: -1
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+  jwt-secret-key: ${PDK_JWT_SECRET:pdk-street-performance-system-secret-2024}
+
+# 文件存储（使用绝对路径，启动时自动创建）
+file:
+  upload-path: ${PDK_UPLOAD_PATH:/tmp/pdk-uploads/}
+  access-url: http://localhost:8080/files/
+
+# 业务配置
+pdk:
+  # 高德地图 Key（生产环境通过环境变量注入）
+  amap-key: ${PDK_AMAP_KEY:请配置高德地图KEY}
+  amap-web-key: d61dc60a66d8a04945b6a376b6cebdce  # 后端搜索用
+  # AES 身份证加密密钥（必须16位）
+  aes-key: ${PDK_AES_KEY:pdk@AES#Key20241}
+  # 系统访问域名（用于二维码链接）
+  base-url: ${PDK_BASE_URL:http://localhost:5173}
+  # 每位艺人每天最多报备场次
+  max-reports-per-day: 3
+  # 信用分最低限制（低于此分不可报备热门点位）
+  credit-limit-hot: 60
+  # 信用分禁用账号线
+  credit-limit-ban: 40
+
+
+
+logging:
+  level:
+    org.springframework.web.servlet.resource: WARN
+
+knife4j:
+  enable: true
+  openapi:
+    title: 街头演出点位报备系统 API
+    description: 街头演出点位报备系统接口文档
+    version: 1.0.0

@@ -1,0 +1,38 @@
+# ===== 敏感配置（绝不上传）=====
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+backend/src/main/resources/application-prod.yml
+backend/src/main/resources/application-local.yml
+
+# ===== 前端依赖与构建产物 =====
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ===== 后端构建产物 =====
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# ===== 文件上传目录（本地运行产生）=====
+uploads/
+/tmp/pdk-uploads/
+
+# ===== 毕业论文 Word 文件（二进制大文件）=====
+*.doc
+*.docx
+
+# ===== IDE 配置 =====
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+
+# ===== 日志 =====
+*.log
+logs/

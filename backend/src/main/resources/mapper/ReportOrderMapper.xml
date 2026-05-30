@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pdk.module.report.mapper.ReportOrderMapper">
+
+    <!-- 同点位时间冲突检测 -->
+    <select id="findConflictInSameVenue" resultType="com.pdk.module.report.entity.ReportOrder">
+        SELECT * FROM t_report_order
+        WHERE venue_id = #{venueId}
+          AND perform_date = #{date}
+          AND status IN (1, 2)
+          AND time_slot_end > #{start}
+          AND time_slot_start &lt; #{end}
+          <if test="excludeId != null">
+              AND id != #{excludeId}
+          </if>
+        LIMIT 1
+    </select>
+
+    <!-- 邻近点位时间冲突检测（使用 IN 参数列表，防注入） -->
+    <select id="findConflictInNearbyVenues" resultType="com.pdk.module.report.entity.ReportOrder">
+        SELECT * FROM t_report_order
+        WHERE venue_id IN
+        <foreach collection="venueIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+          AND perform_date = #{date}
+          AND status IN (1, 2)
+          AND time_slot_end > #{start}
+          AND time_slot_start &lt; #{end}
+        LIMIT 1
+    </select>
+
+    <!-- 查询指定点位指定日期已通过的时段列表（用于日历展示） -->
+    <select id="listOccupiedSlots" resultType="com.pdk.module.report.vo.TimeSlotVO">
+        SELECT
+            id          AS orderId,
+            time_slot_start AS start,
+            time_slot_end   AS `end`,
+            perform_type    AS performType,
+            status
+        FROM t_report_order
+        WHERE venue_id = #{venueId}
+          AND perform_date = #{date}
+          AND status IN (1, 2)
+        ORDER BY time_slot_start
+    </select>
+
+</mapper>
